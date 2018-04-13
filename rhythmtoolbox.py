@@ -441,40 +441,40 @@ def fleissKappa(mat):
     k = len(mat[0])
     
     if DEBUG:
-        print n, "raters."
-        print N, "subjects."
-        print k, "categories."
+        print(n, "raters.")
+        print(N, "subjects.")
+        print(k, "categories.")
     
     # Computing p[]
     p = [0.0] * k
-    for j in xrange(k):
+    for j in range(k):
         p[j] = 0.0
-        for i in xrange(N):
+        for i in range(N):
             p[j] += mat[i][j]
         p[j] /= N*n
-    if DEBUG: print "p =", p
+    if DEBUG: print("p =", p)
     
     # Computing P[]    
     P = [0.0] * N
-    for i in xrange(N):
+    for i in range(N):
         P[i] = 0.0
-        for j in xrange(k):
+        for j in range(k):
             P[i] += mat[i][j] * mat[i][j]
         P[i] = (P[i] - n) / (n * (n - 1))
-    if DEBUG: print "P =", P
+    if DEBUG: print("P =", P)
     
     # Computing Pbar
     Pbar = sum(P) / N
-    if DEBUG: print "Pbar =", Pbar
+    if DEBUG: print("Pbar =", Pbar)
     
     # Computing PbarE
     PbarE = 0.0
     for pj in p:
         PbarE += pj * pj
-    if DEBUG: print "PbarE =", PbarE
+    if DEBUG: print("PbarE =", PbarE)
     
     kappa = (Pbar - PbarE) / (1 - PbarE)
-    if DEBUG: print "kappa =", kappa
+    if DEBUG: print("kappa =", kappa)
     
     return kappa
 
@@ -1004,7 +1004,7 @@ def makestyle(lista, length, folder,stylename):
 #The output is a bunch of .txt files approproate for Dr.Drums to use.
 
 
-	orders=range(10)
+	orders=list(range(10))
 	length=16
 	stylename=stylename
 	folder='styles'
@@ -1054,8 +1054,8 @@ def makestyle(lista, length, folder,stylename):
 			fileout = open(folder+'/'+stylename+'-'+str(order)+'-'+str(index), "w")
 			totalpatts=len(allsteps2l)/length
 			stepdict={}
-			print >>fileout, "order,", str(order)+";"
-			print >>fileout, "step,", str(index)+";"
+			print("order,", str(order)+";", file=fileout)
+			print("step,", str(index)+";", file=fileout)
 			
 			for patt in range(totalpatts):
 				#patt es el patron que queremos explorar(zero based)
@@ -1072,15 +1072,15 @@ def makestyle(lista, length, folder,stylename):
 					stepdict[past]=[allsteps2l[nuindex]]
 				else:
 					stepdict[past].append(allsteps2l[nuindex])
-			for key, value in stepdict.iteritems():
+			for key, value in stepdict.items():
 				lc=Counter(value)
 				pastout=[]
-				for k,v in lc.iteritems():
+				for k,v in lc.items():
 					pastout.append([k,float(v)/len(lc)])
 				#pastout=" ".join(str(x) for x in pastout)	
 				line=[item for sublist in pastout for item in sublist]
 				line=" ".join(str(x) for x in line)
-				print >>fileout, key+',',str(line)+';'
+				print(key+',',str(line)+';', file=fileout)
 			fileout.close()
 	return 
 
