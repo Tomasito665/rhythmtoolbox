@@ -240,7 +240,7 @@ def compute(pattern):
     beatsync_mid = []
     beatsync_hi = []
     if len(salow) % 16 == 0:  # patt binario
-        for s in range(len(salow) / 4):
+        for s in range(len(salow) // 4):
             # print s,salow[s*4:(s*4)+4]
             # print sum(salow[s*4:(s*4)+4])
             beatsync_lo.append(sum(salow[s * 4:(s * 4) + 4]))
@@ -250,7 +250,7 @@ def compute(pattern):
     # print pattname,beatsync_mid
     # print pattname,beatsync_hi
     if len(salow) % 12 == 0:  # patt ternario
-        for s in range(len(salow) / 3):
+        for s in range(len(salow) // 3):
             # print s,salow[s*4:(s*4)+4]
             # print sum(salow[s*4:(s*4)+4])
             beatsync_lo.append(sum(salow[s * 3:(s * 3) + 3]))
@@ -1198,7 +1198,7 @@ def midifolder2list(foldername):
                             grid[acc / 24] = temp
         # print grid
         steps = list(grid.keys())
-        totalsteps = ((max(steps) / 16) + 1) * 16  # find the rounded length in steps of 1/16th notes
+        totalsteps = int(((max(steps) // 16) + 1) * 16)  # find the rounded length in steps of 1/16th notes
         for x in range(totalsteps):
             if grid.get(x) == None:
                 grid[x] = [0]
