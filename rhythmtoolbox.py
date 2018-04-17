@@ -1160,51 +1160,50 @@ def rs_plot(names, coords, title):
     return
 
 
-def midifolder2list(foldername):
-    # this function converts all midi files in a folder into lists
-    # the idea is that this list is fed to the makestyle function.
-    # this function looks for a local folder named /midi and then
-    # for a subfolder which is called from the function
-    allpatterns = []
-    allfiles = os.listdir("midi/" + foldername)
-    for filename in allfiles:  # store in filename the name of each of the files
-        # print filename
+def parse_midi_files(midi_root_directory):
+    dirname = os.path.split(midi_root_directory)[-1]
+    patterns = []
 
-        mid = mido.MidiFile("midi/" + foldername + "/" + filename)
+    for fname in os.listdir(midi_root_directory):
+        fpath = os.path.join(midi_root_directory, fname)
+        mid = mido.MidiFile(fpath)
 
-        # time: inside a track, it is delta time in ticks. A delta time is how long to wait before the next message. This must be an integer
-
+        grid = dict()
         acc = 0
+
         for i, track in enumerate(mid.tracks):
-            grid = {}
-            # print('Track {}: {}'.format(i, track.name))
+            grid.clear()
             for msg in track:
                 useful = str(msg)
-                # print useful[0]
                 if useful[0] != '<':
-
                     note = int(useful.split()[2][5:7])
                     acc = msg.time + acc
                     if msg.type is 'note_on':
                         temp = []
-                        if acc / 24 in grid:
-
-                            temp = grid[acc / 24]
+                        if acc // 24 in grid:
+                            temp = grid[acc // 24]
                             temp.append(note)
-                            grid[acc / 24] = temp
+                            grid[acc // 24] = temp
                         else:
                             temp.append(note)
-                            # print type(note),temp, note
-                            grid[acc / 24] = temp
-        # print grid
+                            grid[acc // 24] = temp
+
         steps = list(grid.keys())
-        totalsteps = int(((max(steps) // 16) + 1) * 16)  # find the rounded length in steps of 1/16th notes
-        for x in range(totalsteps):
-            if grid.get(x) == None:
+        total_step_count = int(((max(steps) // 16) + 1) * 16)  # find the rounded length in steps of 1/16th notes
+
+        for x in range(total_step_count):
+            if grid.get(x) is None:
                 grid[x] = [0]
-        #	print x,grid.get(x)
+
+        pattern_name = "%s_%s" % (dirname, fname)
         onsets = list(grid.values())
-        # print foldername+'_'+filename,onsets
-        onsets.insert(0, foldername + '_' + filename)
-        allpatterns.append(onsets)
-    return allpatterns
+        onsets.insert(0, pattern_name)
+        patterns.append(onsets)
+
+    return patterns
+
+
+def midifolder2list(foldername):
+    path = os.path.abspath(os.path.join(".", "midi", foldername))
+    return parse_midi_files(path)
+
